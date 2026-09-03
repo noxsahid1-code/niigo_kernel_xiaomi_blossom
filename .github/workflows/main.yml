@@ -7,7 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # Lagatar warning se bachne ke liye sirf ek variable kafi hai
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
 
     steps:
@@ -33,7 +32,7 @@ jobs:
       run: |
         mkdir -p ./compiled_modules
         echo "Searching for built .ko files..."
-        find . -type f -name "*.ko" -exec cp {} ./compiled_modules/ \;
+        sudo find . -type f -name "*.ko" -exec cp {} ./compiled_modules/ \; 2>/dev/null || true
         echo "Found modules:"
         ls -la ./compiled_modules/
 
