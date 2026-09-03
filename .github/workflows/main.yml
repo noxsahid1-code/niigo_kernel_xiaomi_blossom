@@ -30,9 +30,9 @@ jobs:
         image: Image.gz
 
     - name: Upload Kernel and Module
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v4
       with:
         name: moduleandkernel
         path: |
           ${{ steps.build.outputs.outfile }}
-          ./out/drivers/memkernel/memkernel.ko
+          **/*.ko
