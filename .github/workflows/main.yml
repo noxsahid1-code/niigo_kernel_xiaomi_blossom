@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+      # Lagatar warning se bachne ke liye sirf ek variable kafi hai
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
 
     steps:
@@ -29,10 +29,18 @@ jobs:
         defconfig: blossom_defconfig
         image: Image.gz
 
+    - name: Locate and Collect Modules
+      run: |
+        mkdir -p ./compiled_modules
+        echo "Searching for built .ko files..."
+        find . -type f -name "*.ko" -exec cp {} ./compiled_modules/ \;
+        echo "Found modules:"
+        ls -la ./compiled_modules/
+
     - name: Upload Kernel and Module
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: moduleandkernel
         path: |
           ${{ steps.build.outputs.outfile }}
-          **/*.ko
+          ./compiled_modules/*.ko
