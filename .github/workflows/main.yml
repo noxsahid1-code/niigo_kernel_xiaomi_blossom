@@ -13,9 +13,9 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v5
 
-    - name: Integrate KernelSU Next
+    - name: Integrate KernelSU Next (Legacy Driver Support)
       run: |
-        curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -
+        curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s legacy
 
     - name: Set up MemKernel directly into Kernel (Inbuilt)
       run: |
@@ -24,7 +24,9 @@ jobs:
     - name: Force Enable Drivers in Defconfig
       run: |
         find . -name "blossom_defconfig" -exec sh -c '
+          echo "" >> "{}"
           echo "CONFIG_KSU=y" >> "{}"
+          echo "CONFIG_KSU_TAMPER_SYS_CALL=y" >> "{}"
           echo "CONFIG_MEMKERNEL=y" >> "{}"
         ' \;
 
