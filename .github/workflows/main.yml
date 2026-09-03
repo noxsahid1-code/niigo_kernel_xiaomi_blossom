@@ -13,9 +13,20 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v5
 
-    - name: Set up MemKernel directly into Kernel (Inbuilt - Y)
+    - name: Integrate KernelSU Next
+      run: |
+        curl -LSs "https://raw.githubusercontent.com/rifs2000/KernelSU-Next/next/kernel/setup.sh" | bash -s next
+
+    - name: Set up MemKernel directly into Kernel (Inbuilt)
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s Y Loganysl
+
+    - name: Force Enable Drivers in Defconfig
+      run: |
+        find . -name "blossom_defconfig" -exec sh -c '
+          echo "CONFIG_KSU=y" >> "{}"
+          echo "CONFIG_MEMKERNEL=y" >> "{}"
+        ' \;
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
@@ -31,5 +42,5 @@ jobs:
     - name: Upload Built Kernel Image
       uses: actions/upload-artifact@v6
       with:
-        name: Inbuilt_MemKernel_Image
+        name: KSU_MemKernel_Image
         path: ${{ steps.build.outputs.outfile }}
