@@ -13,9 +13,9 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v5
 
-    - name: Set up MemKernel as a module (M-OUT) with specified name
+    - name: Set up MemKernel directly into Kernel (Inbuilt - Y)
       run: |
-        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M
+        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s Y Loganysl
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
@@ -28,18 +28,8 @@ jobs:
         defconfig: blossom_defconfig
         image: Image.gz
 
-    - name: Locate and Collect Modules
-      run: |
-        mkdir -p ./compiled_modules
-        echo "Searching for built .ko files..."
-        sudo find . -type f -name "*.ko" -exec cp {} ./compiled_modules/ \; 2>/dev/null || true
-        echo "Found modules:"
-        ls -la ./compiled_modules/
-
-    - name: Upload Kernel and Module
+    - name: Upload Built Kernel Image
       uses: actions/upload-artifact@v6
       with:
-        name: moduleandkernel
-        path: |
-          ${{ steps.build.outputs.outfile }}
-          ./compiled_modules/*.ko
+        name: Inbuilt_MemKernel_Image
+        path: ${{ steps.build.outputs.outfile }}
